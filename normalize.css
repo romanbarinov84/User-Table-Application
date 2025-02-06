@@ -1,0 +1,27 @@
+html{
+    box-sizing: border-box;
+}
+
+*,
+*::after,
+*::before{
+    box-sizing: inherit;
+}
+
+a{
+    color: cadetblue;
+    text-decoration: none;
+}
+
+body{
+    font-family: 'Lucida Sans',  sans-serif;
+    
+}
+
+.container{
+max-width: 1000px;
+margin: 0 auto;
+padding: 40px 15px;
+
+}
+
