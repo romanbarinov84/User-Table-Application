@@ -95,35 +95,41 @@ function render(arrData) {
   $tableBody.innerHTML = " ";
   let copyListData = [...arrData];
 
+  // Добавление вычисляемых свойств
   for (const oneUser of copyListData) {
     oneUser.fio =
       oneUser.name + " " + oneUser.sureName + " " + oneUser.lastName;
     oneUser.birthYear = new Date().getFullYear() - oneUser.age;
   }
-  console.log(copyListData);
 
+  // Фильтрация
+  if ($filterNameInput.value.trim() !== "") {
+    copyListData = copyListData.filter(function (oneUser) {
+      return oneUser.fio.toLowerCase().includes($filterNameInput.value.trim().toLowerCase());
+    });
+  }
+
+  // Сортировка
   copyListData = copyListData.sort(function (a, b) {
-    let result = 0;
-    if (a[sortColumnFlag] < b[sortColumnFlag]) {
-      return -1;
+    if (sortColumnFlag === "fio") {
+      if (a.fio < b.fio) return -1;
+      if (a.fio > b.fio) return 1;
+      return 0;
+    } else if (sortColumnFlag === "age") {
+      return a.age - b.age;
     }
+    return 0;
   });
 
-   if($filterNameInput.value.trim() !== ""){
-     copyListData = copyListData.filter(function(oneUser) {
-    if(oneUser.fio.includes($filterNameInput.value)) return true
-  
-  })
-   }
- 
-
+  // Рендеринг данных в таблицу
   for (const oneUser of copyListData) {
     const $newTr = createUserTr(oneUser);
-
     $tableBody.append($newTr);
   }
 }
+
 render(listData);
+
 $addForm.addEventListener("submit", function (event) {
   event.preventDefault();
 
@@ -148,7 +154,7 @@ $addForm.addEventListener("submit", function (event) {
     name: $nameInput.value.trim(),
     sureName: $sureNameInput.value.trim(),
     lastName: $lastNameInput.value.trim(),
-    age: $ageInput.value.trim(),
+    age: Number($ageInput.value.trim()), // Преобразуем в число
     hobby: $hobbyInput.value.trim(),
   });
 
@@ -167,6 +173,6 @@ $sortAge.addEventListener("click", function () {
   render(listData);
 });
 
-$filterNameInput.addEventListener("input" , function() {
-  render(listData)
-})
+$filterNameInput.addEventListener("input", function () {
+  render(listData);
+});
